@@ -1,0 +1,5 @@
+Récupérer tous les documents : 
+    SELECT ?subject ?predicate ?object
+    WHERE {
+      ?subject ?predicate ?object
+    }
