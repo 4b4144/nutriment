@@ -44,27 +44,52 @@ router.get('/:id', async (req, res) => {
     const id = req.params.id;
     try {
         const query = `
-        SELECT DISTINCT ?predicate ?object
+        SELECT ?predicate ?object
         WHERE {
           <http://127.0.0.1:3333/id=${id}> ?predicate ?object .
+          FILTER (?predicate IN (
+            <http://127.0.0.1:3333/alim/alim_nom_fr>,
+            <http://127.0.0.1:3333/alim/alim_grp_nom_fr>,
+            <http://127.0.0.1:3333/alim/alim_ssssg_nom_fr>,
+            <http://127.0.0.1:3333/alim/alim_img>,
+            <http://127.0.0.1:3333/alim/eau>,
+            <http://127.0.0.1:3333/alim/vitamineE>,
+            <http://127.0.0.1:3333/alim/vitamineK2>,
+            <http://127.0.0.1:3333/alim/vitamineK1>,
+            <http://127.0.0.1:3333/alim/chlorure>,
+            <http://127.0.0.1:3333/alim/glucose>,
+            <http://127.0.0.1:3333/alim/vitamineB2>,
+            <http://127.0.0.1:3333/alim/lipides>,
+            <http://127.0.0.1:3333/alim/calcium>,
+            <http://127.0.0.1:3333/alim/vitamineC>,
+            <http://127.0.0.1:3333/alim/fer>,
+            <http://127.0.0.1:3333/alim/energie>,
+            <http://127.0.0.1:3333/alim/sucres>,
+            <http://127.0.0.1:3333/alim/vitamineB1>,
+            <http://127.0.0.1:3333/alim/vitamineB3>,
+            <http://127.0.0.1:3333/alim/vitamineD>,
+            <http://127.0.0.1:3333/alim/glucides>,
+            <http://127.0.0.1:3333/alim/proteines>,
+            <http://127.0.0.1:3333/alim/cuivre>,
+            <http://127.0.0.1:3333/alim/cholesterol>,
+            <http://127.0.0.1:3333/alim/zinc>
+          ))
         }
       `;
-        const client = new SparqlClient({ endpointUrl });
-        const stream = await client.query.select(query);
 
-        const result = [];
+      const result = [];
 
-        stream.on('data', row => {
-            dataObject = {};
-            Object.entries(row).forEach(([key, value]) => {
-                dataObject[key] = value.value;
-            });
-            result.push(dataObject);
-        });
+      stream.on('data', row => {
+          dataObject = {};
+          Object.entries(row).forEach(([key, value]) => {
+              dataObject[key] = value.value;
+          });
+          result.push(dataObject);
+      });
 
-        stream.on('end', () => {
-            res.status(200).json(result);
-        });
+      stream.on('end', () => {
+          res.status(200).json(result);
+      });
 
     } catch (error) {
         console.log('Erreur lors de la récupération des données :', error);
