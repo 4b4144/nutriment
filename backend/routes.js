@@ -1,36 +1,33 @@
 const express = require('express');
 const router = express.Router();
-const { SparqlClient } = require('sparql-http-client');
+const SparqlClient = require('sparql-http-client')
 
-router.get('/', async (req, res) => {
+const endpointUrl = 'http://localhost:3030/aliment/sparql';
+
+
+router.get('/aliments', async (req, res) => {
     try {
-        const alimentData = await fetchAliment();
-        res.status(200).json(alimentData);
+    const query = 
+    `
+    SELECT ?value
+    WHERE {
+      ?s ?p ?value
+    }
+  `;
+  const client = new SparqlClient({endpointUrl});
+  const stream = await client.query.select(query);
+  stream.on('data', row => {
+    Object.entries(row).forEach(([key, value]) => {
+      console.log(`${key}: ${value.value} (${value.termType})`)
+    })
+  });
+
+  res.status(200).json({message : 'Succès'});
     } catch (error) {
-        console.error('Erreur lors de la récupération des données :', error);
-        res.status(500).json({ error: 'Erreur lors de la récupération des données.' });
+        console.log('Erreur lors de la récupération des données :', error);
+        res.status(500).json({ error: 'Erreur lors de la récupération des donnée.' });
     }
 });
 
-const fetchAliment = async () => {
-    const client = new SparqlClient({ endpointUrl: 'http://localhost:3030/dataset/aliment/query' });
-    const query = `
-    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    SELECT * WHERE {
-      ?sub ?pred ?obj .
-    } LIMIT 10
-  `;
-
-    return client.query.select(query).execute()
-        .then(response => {
-            const results = response.results.bindings;
-            return { results };
-        })
-        .catch(error => {
-            console.error('Erreur lors de l\'exécution de la requête :', error);
-            throw error;
-        });
-}
 
 module.exports = router;
