@@ -22,7 +22,7 @@ module.exports = {
       'orange' : '#efb381'
     },
     fontFamily : {
-
+      titre : ["Lobster"]
     },
     extend: {},
   },
