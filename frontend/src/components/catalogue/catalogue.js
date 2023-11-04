@@ -1,16 +1,36 @@
 import React, { useState, useEffect } from 'react'
 import AlimentCard from '../aliment-card/aliment-card'
 
-const Catalogue = () => {
+const Catalogue = (props) => {
 
     const [aliments, setAliments] = useState([]);
 
     useEffect(() => {
-        console.log("Page catalogue")
-    });
+        fetchAliments();
+    }, []);
 
-    const fetchAliments = () => {
-        // 
+    const fetchAliments = async () => {
+        try {
+            const endPoint = "/aliments";
+            const res = await fetch(endPoint);
+
+            if (!res.ok) {
+                throw new Error(`HTTP error! Status: ${res.status}`);
+            }
+
+            const alims = await res.json();
+
+            setAliments(alims);
+
+            alims.forEach(element => {
+
+                console.log(element);
+
+
+            });
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     return (
