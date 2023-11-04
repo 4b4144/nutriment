@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import AlimentCard from '../aliment-card/aliment-card'
 
-const Catalogue = (props) => {
+const Catalogue = () => {
 
     const [aliments, setAliments] = useState([]);
 
