@@ -39,7 +39,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-// route pour : http:localhost:3000/aliments/ un identifiant exemple : 1014
+// route pour : http:localhost:4000/aliments/ un identifiant exemple : 1014
 router.get('/:id', async (req, res) => {
     const id = req.params.id;
     try {
@@ -72,20 +72,22 @@ router.get('/:id', async (req, res) => {
             <http://127.0.0.1:3333/alim/proteines>,
             <http://127.0.0.1:3333/alim/cuivre>,
             <http://127.0.0.1:3333/alim/cholesterol>,
-            <http://127.0.0.1:3333/alim/zinc>
+            <http://127.0.0.1:3333/alim/zinc>,
+            <http://127.0.0.1:3333/alim/alim_img>
           ))
         }
       `;
 
-      const result = [];
-
+      const result = {};
+    
+      const client = new SparqlClient({ endpointUrl });
+      const stream = await client.query.select(query);
+      
       stream.on('data', row => {
-          dataObject = {};
-          Object.entries(row).forEach(([key, value]) => {
-              dataObject[key] = value.value;
-          });
-          result.push(dataObject);
-      });
+        const { predicate, object } = row;
+        const shortKey = predicate.value.split('/').slice(-1)[0]; // Récupère la dernière partie de l'URL comme nom de clé
+        result[shortKey] = object.value;
+        });
 
       stream.on('end', () => {
           res.status(200).json(result);

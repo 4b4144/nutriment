@@ -8,7 +8,7 @@ app.use(bodyParser.json());
 
 app.use('/aliments', AlimentRoutesHandler);
 
-const port = 3000; // port du backend
+const port = 4000; // port du backend
 
 app.listen(port, () => {
     console.log('Serveur démarré au port ' + port);
