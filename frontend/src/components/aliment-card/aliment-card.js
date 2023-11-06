@@ -23,7 +23,6 @@ const AlimentCard = ({alimId, alimName, alimGroup, alimImage}) => {
 
     const navigateToDetailsPage = (alim) =>{
         if(alim !== null){
-            console.log(alim)
                 navigate(`/catalogue/${alimId}` , { state: { alim } });
         }else{
             alert( 'Problème, veuillez réessayer !');
