@@ -1,5 +1,5 @@
-import {React, useEffect, useState} from "react";
-import { useNavigate } from "react-router-dom"; 
+import {React} from "react";
+import { useNavigate} from "react-router-dom"; 
 
 import defaultAlimentImage from "../../utils/aliments.webp"
 
@@ -32,9 +32,9 @@ const AlimentCard = ({alimId, alimName, alimGroup, alimImage}) => {
 
     return (
         <>
-            <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+            <div className="max-w-sm bg-white shadow-2xl rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
                 <a href="#">
-                    <img className="rounded-t-lg" src={alimImage || defaultAlimentImage} alt={alimName} />
+                    <img className="rounded-t-lg object-cover h-96 w-full" src={alimImage || defaultAlimentImage} alt={alimName} />
                 </a>
                 <div className="p-5">
                     <a href="#">
