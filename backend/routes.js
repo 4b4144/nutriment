@@ -8,7 +8,7 @@ const endpointUrl = 'http://localhost:3030/aliment/sparql';
 router.get('/', async (req, res) => {
     try {
         const query =
-        `
+            `
         SELECT DISTINCT (strafter(str(?id), "=") AS ?aliment_id) ?nom ?nomgrp ?image
         WHERE {
           ?id a ?type .
@@ -78,25 +78,43 @@ router.get('/:id', async (req, res) => {
         }
       `;
 
-      const result = {};
-    
-      const client = new SparqlClient({ endpointUrl });
-      const stream = await client.query.select(query);
-      
-      stream.on('data', row => {
-        const { predicate, object } = row;
-        const shortKey = predicate.value.split('/').slice(-1)[0]; // Récupère la dernière partie de l'URL comme nom de clé
-        result[shortKey] = object.value;
+        const result = {};
+
+        const client = new SparqlClient({ endpointUrl });
+        const stream = await client.query.select(query);
+
+        stream.on('data', row => {
+            const { predicate, object } = row;
+            const shortKey = predicate.value.split('/').slice(-1)[0]; // Récupère la dernière partie de l'URL comme nom de clé
+            result[shortKey] = object.value;
         });
 
-      stream.on('end', () => {
-          res.status(200).json(result);
-      });
+        stream.on('end', () => {
+            res.status(200).json(result);
+        });
 
     } catch (error) {
         console.log('Erreur lors de la récupération des données :', error);
         res.status(500).json({ error: 'Erreur lors de la récupération des donnée.' });
     }
 });
+
+router.get('/search-alim', async (req, res) => {
+    try {
+        const stringQuery = req.query.recherche; // Utilisez req.query pour extraire le paramètre de l'URL
+        if (stringQuery) {
+            console.log(stringQuery);
+            
+        } else {
+            console.log('Aucune chaîne de recherche fournie.');
+        }
+
+        res.status(200).end(stringQuery);
+    } catch (error) {
+        console.log('Erreur lors de la récupération des données :', error);
+        res.status(500).json({ error: 'Erreur lors de la récupération des données.' });
+    }
+});
+
 
 module.exports = router;

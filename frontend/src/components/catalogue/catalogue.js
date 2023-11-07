@@ -65,7 +65,7 @@ const Catalogue = () => {
             breakLabel={'...'}
             pageCount={Math.ceil(aliments.length / itemsPerPage)}
             marginPagesDisplayed={2}
-            pageRangeDisplayed={3}
+            pageRangeDisplayed={5}
             onPageChange={handlePageClick}
             containerClassName="flex rounded py-2 px-4"
             pageClassName="mx-4 font-bold"
