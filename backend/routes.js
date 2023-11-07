@@ -17,6 +17,7 @@ router.get('/', async (req, res) => {
           OPTIONAL { ?id <http://127.0.0.1:3333/alim/alim_img> ?image }
           FILTER (!REGEX(?nomgrp, "^[0-9]"))
         }
+        LIMIT 12
     `;
         const client = new SparqlClient({ endpointUrl });
         const stream = await client.query.select(query);
