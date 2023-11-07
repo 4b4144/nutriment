@@ -99,22 +99,45 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-router.get('/search-alim', async (req, res) => {
+ // route pour http:localhost:4000/aliments/search?recherche="...."
+router.get('/search', async (req, res) => {
     try {
-        const stringQuery = req.query.recherche; // Utilisez req.query pour extraire le paramètre de l'URL
+        const stringQuery = req.query.recherche;
+        console.log(req.query);
         if (stringQuery) {
-            console.log(stringQuery);
-            
-        } else {
-            console.log('Aucune chaîne de recherche fournie.');
+            const query =
+                `
+                SELECT DISTINCT (strafter(str(?id), "=") AS ?aliment_id) ?nom ?nomgrp ?image
+                WHERE {
+                  ?id a ?type .
+                  ?id <http://127.0.0.1:3333/alim/alim_nom_fr> ?nom .
+                  ?id <http://127.0.0.1:3333/alim/alim_grp_nom_fr> ?nomgrp.
+                  OPTIONAL { ?id <http://127.0.0.1:3333/alim/alim_img> ?image }
+                  FILTER (!REGEX(?nomgrp, "^[0-9]"))
+                  FILTER (STRSTARTS(UCASE(?nom), UCASE("${stringQuery}")))
+                }
+        `;
+            const client = new SparqlClient({ endpointUrl });
+            const stream = await client.query.select(query);
+            const result = [];
+
+            stream.on('data', row => {
+                dataObject = {};
+                Object.entries(row).forEach(([key, value]) => {
+                    dataObject[key] = value.value;
+                });
+                result.push(dataObject);
+            });
+
+            stream.on('end', () => {
+                res.status(200).json(result);
+            });
         }
 
-        res.status(200).end(stringQuery);
     } catch (error) {
         console.log('Erreur lors de la récupération des données :', error);
-        res.status(500).json({ error: 'Erreur lors de la récupération des données.' });
+        res.status(500).json({ error: 'Erreur lors de la récupération des donnée.' });
     }
 });
-
 
 module.exports = router;
