@@ -9,15 +9,15 @@ const endpointUrl = 'http://localhost:3030/aliment/sparql';
 router.get('/search', async (req, res) => {
     try {
         const stringQuery = req.query.recherche;
-        console.log(req.query);
         if (stringQuery) {
             const query =
                 `
-                SELECT DISTINCT (strafter(str(?id), "=") AS ?aliment_id) ?nom ?nomgrp ?image
+                SELECT DISTINCT (strafter(str(?id), "=") AS ?aliment_id) ?nom ?nomgrp ?image ?cal
                 WHERE {
                   ?id a ?type .
                   ?id <http://127.0.0.1:3333/alim/alim_nom_fr> ?nom .
                   ?id <http://127.0.0.1:3333/alim/alim_grp_nom_fr> ?nomgrp.
+                  ?id <http://127.0.0.1:3333/alim/energie> ?cal.
                   OPTIONAL { ?id <http://127.0.0.1:3333/alim/alim_img> ?image }
                   FILTER (!REGEX(?nomgrp, "^[0-9]"))
                   FILTER (STRSTARTS(UCASE(?nom), UCASE("${stringQuery}")))
@@ -49,17 +49,40 @@ router.get('/search', async (req, res) => {
 // route pour : http:localhost:4000/aliments
 router.get('/', async (req, res) => {
     try {
-        const query =
+        let query ="";
+        const groupQuery = req.query.group;
+        const orderQuery = req.query.order;
+
+        if(groupQuery && orderQuery){
+            query = 
             `
-        SELECT DISTINCT (strafter(str(?id), "=") AS ?aliment_id) ?nom ?nomgrp ?image
+                SELECT DISTINCT (strafter(str(?id), "=") AS ?aliment_id) ?nom ?nomgrp ?image ?cal
+                WHERE {
+                ?id a ?type .
+                ?id <http://127.0.0.1:3333/alim/alim_nom_fr> ?nom .
+                ?id <http://127.0.0.1:3333/alim/alim_grp_nom_fr> ?nomgrp.
+                ?id <http://127.0.0.1:3333/alim/energie> ?cal.
+                OPTIONAL { ?id <http://127.0.0.1:3333/alim/alim_img> ?image }
+                FILTER (!REGEX(?nomgrp, "^[0-9]"))
+                FILTER (STRSTARTS(UCASE(?nomgrp), UCASE("${groupQuery}")))
+                }
+                ORDER BY ${orderQuery}(?cal)
+        `
+        }else{
+            query = 
+            `
+        SELECT DISTINCT (strafter(str(?id), "=") AS ?aliment_id) ?nom ?nomgrp ?image ?cal
         WHERE {
           ?id a ?type .
           ?id <http://127.0.0.1:3333/alim/alim_nom_fr> ?nom .
           ?id <http://127.0.0.1:3333/alim/alim_grp_nom_fr> ?nomgrp.
+          ?id <http://127.0.0.1:3333/alim/energie> ?cal.
           OPTIONAL { ?id <http://127.0.0.1:3333/alim/alim_img> ?image }
           FILTER (!REGEX(?nomgrp, "^[0-9]"))
         }
     `;
+        }
+        
         const client = new SparqlClient({ endpointUrl });
         const stream = await client.query.select(query);
         const result = [];

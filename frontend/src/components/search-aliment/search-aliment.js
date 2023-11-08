@@ -77,6 +77,7 @@ const SearchAliment = () => {
                                             alimName={aliment.nom}
                                             alimGroup={aliment.nomgrp}
                                             alimImage={aliment.image}
+                                            alimCal={aliment.cal}
                                         />
                                     </div>
                                 ))}
