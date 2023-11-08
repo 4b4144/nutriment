@@ -50,7 +50,7 @@ const SearchAliment = () => {
 
     return (
         <>
-            <div className="flex flex-col items-center justify-center min-h-screen">
+            <div className="flex flex-col items-center justify-center min-h-screen mt-8 mb-16">
                 <h1 className="text-2xl font-bold text-vertf font-titre mt-4">
                     Rechercher un aliment par son nom :
                 </h1>
@@ -84,9 +84,8 @@ const SearchAliment = () => {
                         </div>
                     )}
                 </div>
-            </div>
-            {aliments.length > itemsPerPage && (
-                <div className="flex flex-col items-center justify-center w-4/5 mt-24">
+                {aliments.length > itemsPerPage && (
+                <div className="flex flex-col items-center justify-center w-4/5 mt-24 mb-24">
                     <ReactPaginate
                         previousLabel={"< Précédent"}
                         nextLabel={"Suivant >"}
@@ -107,6 +106,8 @@ const SearchAliment = () => {
                     />
                 </div>
             )}
+            </div>
+
         </>
     );
 };

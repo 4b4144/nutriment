@@ -43,7 +43,7 @@ const Catalogue = () => {
     };
 
     return (
-      <div className="flex flex-col items-center justify-center w-full mt-4 mb-4 p-28 h-full">
+      <div className="flex flex-col items-center justify-center w-full mt-4 mb-4 p-28 min-h-screen">
         <div className="w-4/5 h-full">
           <div className="grid grid-cols-3 gap-4">
             {paginatedAliments.map((aliment, index) => (
