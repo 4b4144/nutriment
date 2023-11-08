@@ -5,7 +5,6 @@ const SparqlClient = require('sparql-http-client')
 const endpointUrl = 'http://localhost:3030/aliment/sparql';
 
 
-
 // route pour http:localhost:4000/aliments/search?recherche="...."
 router.get('/search', async (req, res) => {
     try {
