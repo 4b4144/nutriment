@@ -9,11 +9,11 @@ const SearchAliment = () => {
     const [searchText, setSearchText] = useState("");
 
     useEffect(() => {
-        // Appeler l'API uniquement lorsque searchText a plus de 3 caractères
+        
         if (searchText.length > 3) {
             fetchAlimString(searchText);
         } else {
-            // Réinitialiser les résultats si la recherche est trop courte
+           
             setAliments([]);
         }
     }, [searchText]);
@@ -29,7 +29,7 @@ const SearchAliment = () => {
 
             const alim = await res.json();
             setAliments(alim);
-            setCurrentPage(0); // Réinitialiser la page courante après une nouvelle recherche
+            setCurrentPage(0); 
         } catch (error) {
             console.error(error);
         }
